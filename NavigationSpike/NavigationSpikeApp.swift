@@ -14,9 +14,16 @@ struct NavigationSpikeApp: App {
                                     .init()]
                             )
                         ),
-                        reducer: ListItem()
+                        reducer: ItemList()
                     )
                 )
+                // Below works
+//                RowItemView(
+//                    store: .init(
+//                        initialState: .init(),
+//                        reducer: RowItem()
+//                    )
+//                )
             }
         }
     }

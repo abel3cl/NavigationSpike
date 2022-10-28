@@ -1,56 +1,54 @@
 import ComposableArchitecture
 import SwiftUI
 
-struct RowItem: ReducerProtocol {
+struct ItemRow: ReducerProtocol {
     enum Route {
         case one, two
     }
     struct State: Identifiable, Equatable {
         var id = UUID()
-        var child: ItemDetail.State = .init()
+        var itemDetail: ItemDetail.State = .init()
         @BindableState var route: Route? = nil
     }
     enum Action: BindableAction, Equatable {
         case binding(BindingAction<State>)
-        case child(ItemDetail.Action)
+        case itemDetail(ItemDetail.Action)
     }
 
     var body: some ReducerProtocol<State, Action> {
         BindingReducer()
-        Scope(state: \.child, action: /Action.child) {
+        Scope(state: \.itemDetail, action: /Action.itemDetail) {
             ItemDetail()
         }
     }
 }
 struct RowItemView: View {
-    var store: StoreOf<RowItem>
-    @ObservedObject var viewStore: ViewStoreOf<RowItem>
+    var store: StoreOf<ItemRow>
+    @ObservedObject var viewStore: ViewStoreOf<ItemRow>
 
-    init(store: StoreOf<RowItem>) {
+    init(store: StoreOf<ItemRow>) {
         self.store = store
         self.viewStore = ViewStore(store)
     }
     var body: some View {
             VStack {
-                Text("Route is: " + String(describing: viewStore.state.route))
                 NavigationLink(
-                    tag: RowItem.Route.one,
+                    tag: ItemRow.Route.one,
                     selection: viewStore.binding(\.$route),
                     destination: {
-                        ItemDetailView(store: store.scope(state: \.child, action: RowItem.Action.child))
+                        ItemDetailView(store: store.scope(state: \.itemDetail, action: ItemRow.Action.itemDetail))
                     }) {
                         Text("Navigate from link 1")
                     }
 
                 NavigationLink(
-                    tag: RowItem.Route.two,
+                    tag: ItemRow.Route.two,
                     selection: viewStore.binding(\.$route),
                     destination: {
-                        ItemDetailView(store: store.scope(state: \.child, action: RowItem.Action.child))
+                        ItemDetailView(store: store.scope(state: \.itemDetail, action: ItemRow.Action.itemDetail))
                     }) {
                         Text("Navigate from link 2")
                     }
             }
-        
     }
 }
